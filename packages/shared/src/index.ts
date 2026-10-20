@@ -1,5 +1,5 @@
 import { z } from 'zod';
-export { cafeConfig, formatMoney } from './config.js';
+export { cafeConfig, formatMoney } from './config.ts';
 
 export const orderStatuses = [
   'received',
@@ -57,14 +57,19 @@ export const optionGroupSchema = z
       group.maxSelections > group.choices.length
     )
       ctx.addIssue({ code: 'custom', message: 'Invalid selection limits' });
-    if (new Set(group.choices.map((choice) => choice.id)).size !== group.choices.length)
+    if (
+      new Set(group.choices.map((choice) => choice.id)).size !==
+      group.choices.length
+    )
       ctx.addIssue({ code: 'custom', message: 'Duplicate choice IDs' });
   });
 export const menuItemInputSchema = z.strictObject({
   categoryId: idSchema,
   name: z.string().trim().min(1).max(100),
   description: z.string().trim().min(1).max(300),
-  imageUrl: z.url().refine((value) => value.startsWith('https://'), 'Use HTTPS'),
+  imageUrl: z
+    .url()
+    .refine((value) => value.startsWith('https://'), 'Use HTTPS'),
   priceCents: moneySchema,
   tags: z.array(dietaryTagSchema).max(5).default([]),
   available: z.boolean().default(true),
@@ -97,11 +102,16 @@ export const updateOrderStatusSchema = z.strictObject({
   status: orderStatusSchema,
 });
 export const loginSchema = z.strictObject({
-  email: z.email().max(254).transform((email) => email.toLowerCase()),
+  email: z
+    .email()
+    .max(254)
+    .transform((email) => email.toLowerCase()),
   password: z.string().min(8).max(72),
 });
 
-export const allowedTransitions: Readonly<Record<OrderStatus, readonly OrderStatus[]>> = {
+export const allowedTransitions: Readonly<
+  Record<OrderStatus, readonly OrderStatus[]>
+> = {
   received: ['preparing', 'cancelled'],
   preparing: ['ready', 'cancelled'],
   ready: ['served', 'cancelled'],
@@ -116,7 +126,9 @@ export const apiErrorSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
-    details: z.array(z.object({ path: z.string(), message: z.string() })).optional(),
+    details: z
+      .array(z.object({ path: z.string(), message: z.string() }))
+      .optional(),
   }),
 });
 export const healthResponseSchema = z.object({

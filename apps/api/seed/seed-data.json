@@ -1,0 +1,734 @@
+{
+  "categories": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Coffee",
+      "sortOrder": 0
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "Brunch",
+      "sortOrder": 1
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "Mains",
+      "sortOrder": 2
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "name": "Pastries",
+      "sortOrder": 3
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "name": "Cold Drinks",
+      "sortOrder": 4
+    }
+  ],
+  "menuItems": [
+    {
+      "id": "00000000-0000-4000-8000-000000000100",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "name": "Alon Espresso",
+      "description": "A syrupy double shot with dark chocolate notes and a bright citrus finish.",
+      "priceCents": 11000,
+      "tags": [],
+      "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 0,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000101",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "name": "Spanish Latte",
+      "description": "Double espresso folded into silky milk and a ribbon of condensed milk.",
+      "priceCents": 16500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 1,
+      "options": [
+        {
+          "id": "00000000-0000-4000-8000-000000001000",
+          "name": "Size",
+          "minSelections": 1,
+          "maxSelections": 1,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001001",
+              "name": "Regular",
+              "priceCents": 0
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001002",
+              "name": "Large",
+              "priceCents": 3500
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000001003",
+          "name": "Add-ons",
+          "minSelections": 0,
+          "maxSelections": 2,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001004",
+              "name": "Extra espresso shot",
+              "priceCents": 4500
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001005",
+              "name": "Vanilla syrup",
+              "priceCents": 2000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000102",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "name": "Sea Salt Latte",
+      "description": "Caramel espresso topped with a soft, lightly salted cream foam.",
+      "priceCents": 18500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 2,
+      "options": [
+        {
+          "id": "00000000-0000-4000-8000-000000001006",
+          "name": "Size",
+          "minSelections": 1,
+          "maxSelections": 1,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001007",
+              "name": "Regular",
+              "priceCents": 0
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001008",
+              "name": "Large",
+              "priceCents": 3500
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000001009",
+          "name": "Add-ons",
+          "minSelections": 0,
+          "maxSelections": 2,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001010",
+              "name": "Extra espresso shot",
+              "priceCents": 4500
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001011",
+              "name": "Vanilla syrup",
+              "priceCents": 2000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000103",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "name": "Coconut Cold Brew",
+      "description": "Slow-steeped coffee with coconut milk and toasted coconut aroma.",
+      "priceCents": 18000,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 3,
+      "options": [
+        {
+          "id": "00000000-0000-4000-8000-000000001012",
+          "name": "Size",
+          "minSelections": 1,
+          "maxSelections": 1,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001013",
+              "name": "Regular",
+              "priceCents": 0
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001014",
+              "name": "Large",
+              "priceCents": 3500
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000001015",
+          "name": "Add-ons",
+          "minSelections": 0,
+          "maxSelections": 2,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001016",
+              "name": "Extra espresso shot",
+              "priceCents": 4500
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001017",
+              "name": "Vanilla syrup",
+              "priceCents": 2000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000104",
+      "categoryId": "00000000-0000-4000-8000-000000000001",
+      "name": "Oat Flat White",
+      "description": "Velvety oat milk meets a bold double ristretto for a smooth little lift.",
+      "priceCents": 17500,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 4,
+      "options": [
+        {
+          "id": "00000000-0000-4000-8000-000000001018",
+          "name": "Size",
+          "minSelections": 1,
+          "maxSelections": 1,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001019",
+              "name": "Regular",
+              "priceCents": 0
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001020",
+              "name": "Large",
+              "priceCents": 3500
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000001021",
+          "name": "Add-ons",
+          "minSelections": 0,
+          "maxSelections": 2,
+          "choices": [
+            {
+              "id": "00000000-0000-4000-8000-000000001022",
+              "name": "Extra espresso shot",
+              "priceCents": 4500
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000001023",
+              "name": "Vanilla syrup",
+              "priceCents": 2000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000105",
+      "categoryId": "00000000-0000-4000-8000-000000000002",
+      "name": "Longganisa Breakfast Plate",
+      "description": "Garlicky longganisa, sunny eggs and garlic rice with house atchara.",
+      "priceCents": 28500,
+      "tags": [],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 0,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000106",
+      "categoryId": "00000000-0000-4000-8000-000000000002",
+      "name": "Mushroom Toast",
+      "description": "Buttery mushrooms on sourdough with whipped ricotta and fresh thyme.",
+      "priceCents": 25500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 1,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000107",
+      "categoryId": "00000000-0000-4000-8000-000000000002",
+      "name": "Ube French Toast",
+      "description": "Brioche soaked in vanilla custard with ube cream and toasted coconut.",
+      "priceCents": 27500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 2,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000108",
+      "categoryId": "00000000-0000-4000-8000-000000000002",
+      "name": "Avocado & Egg Toast",
+      "description": "Smashed avocado, a soft egg and calamansi on crisp sourdough.",
+      "priceCents": 26500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 3,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000109",
+      "categoryId": "00000000-0000-4000-8000-000000000002",
+      "name": "Banana Pancake Stack",
+      "description": "Fluffy pancakes with caramelized saba, maple syrup and toasted walnuts.",
+      "priceCents": 24500,
+      "tags": ["vegetarian", "contains-nuts"],
+      "imageUrl": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 4,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000110",
+      "categoryId": "00000000-0000-4000-8000-000000000003",
+      "name": "Chicken Adobo Bowl",
+      "description": "Soy-vinegar braised chicken over garlic rice with a crisp cucumber salad.",
+      "priceCents": 31500,
+      "tags": [],
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 0,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000111",
+      "categoryId": "00000000-0000-4000-8000-000000000003",
+      "name": "Tocino Rice Bowl",
+      "description": "Sweet glazed pork, pickled green papaya and a sunny egg over rice.",
+      "priceCents": 29500,
+      "tags": [],
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 1,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000112",
+      "categoryId": "00000000-0000-4000-8000-000000000003",
+      "name": "Spicy Tuna Pasta",
+      "description": "Flaked tuna and tomatoes tossed in garlic-chili oil with al dente pasta.",
+      "priceCents": 32500,
+      "tags": ["spicy"],
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 2,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000113",
+      "categoryId": "00000000-0000-4000-8000-000000000003",
+      "name": "Roasted Squash Grain Bowl",
+      "description": "Roasted kalabasa, chickpeas and brown rice with a calamansi-tahini dressing.",
+      "priceCents": 28500,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 3,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000114",
+      "categoryId": "00000000-0000-4000-8000-000000000003",
+      "name": "Pesto Mushroom Pasta",
+      "description": "Sautéed mushrooms and basil pesto with parmesan and toasted cashews.",
+      "priceCents": 31000,
+      "tags": ["vegetarian", "contains-nuts"],
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 4,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000115",
+      "categoryId": "00000000-0000-4000-8000-000000000004",
+      "name": "Butter Croissant",
+      "description": "Golden, flaky layers with a tender center and a rich buttery finish.",
+      "priceCents": 11500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 0,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000116",
+      "categoryId": "00000000-0000-4000-8000-000000000004",
+      "name": "Ube Cheese Pandesal",
+      "description": "Soft purple yam bread with a warm, gently salty cheese center.",
+      "priceCents": 8500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 1,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000117",
+      "categoryId": "00000000-0000-4000-8000-000000000004",
+      "name": "Calamansi Loaf",
+      "description": "A tender citrus cake finished with a bright calamansi glaze.",
+      "priceCents": 12500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 2,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000118",
+      "categoryId": "00000000-0000-4000-8000-000000000004",
+      "name": "Dark Chocolate Cookie",
+      "description": "Crisp edges, a soft center and generous pockets of dark chocolate.",
+      "priceCents": 9500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 3,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000119",
+      "categoryId": "00000000-0000-4000-8000-000000000004",
+      "name": "Almond Pain au Chocolat",
+      "description": "Flaky chocolate pastry filled with almond cream and toasted almond flakes.",
+      "priceCents": 15500,
+      "tags": ["vegetarian", "contains-nuts"],
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "available": false,
+      "sortOrder": 4,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000120",
+      "categoryId": "00000000-0000-4000-8000-000000000005",
+      "name": "Calamansi Honey Fizz",
+      "description": "Fresh calamansi and local honey lifted with ice-cold sparkling water.",
+      "priceCents": 14500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 0,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000121",
+      "categoryId": "00000000-0000-4000-8000-000000000005",
+      "name": "Mango Iced Tea",
+      "description": "Black tea infused with ripe mango and finished with a squeeze of citrus.",
+      "priceCents": 15000,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 1,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000122",
+      "categoryId": "00000000-0000-4000-8000-000000000005",
+      "name": "Iced Matcha Latte",
+      "description": "Earthy matcha whisked smooth and poured over cold milk and ice.",
+      "priceCents": 18500,
+      "tags": ["vegetarian"],
+      "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 2,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000123",
+      "categoryId": "00000000-0000-4000-8000-000000000005",
+      "name": "Strawberry Oat Cooler",
+      "description": "Real strawberry puree swirled through chilled oat milk over ice.",
+      "priceCents": 17500,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 3,
+      "options": []
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000124",
+      "categoryId": "00000000-0000-4000-8000-000000000005",
+      "name": "Coconut Lime Refresher",
+      "description": "Coconut water, fresh lime and mint for a cool tropical reset.",
+      "priceCents": 15500,
+      "tags": ["vegan"],
+      "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=80",
+      "available": true,
+      "sortOrder": 4,
+      "options": []
+    }
+  ],
+  "tables": [
+    {
+      "id": "00000000-0000-4000-8000-000000000200",
+      "number": 1,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000201",
+      "number": 2,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000202",
+      "number": 3,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000203",
+      "number": 4,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000204",
+      "number": 5,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000205",
+      "number": 6,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000206",
+      "number": 7,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000207",
+      "number": 8,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000208",
+      "number": 9,
+      "active": true
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000209",
+      "number": 10,
+      "active": true
+    }
+  ],
+  "users": [
+    {
+      "id": "00000000-0000-4000-8000-000000000300",
+      "email": "admin@example.com",
+      "role": "admin"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000301",
+      "email": "kitchen@example.com",
+      "role": "kitchen"
+    }
+  ],
+  "orders": [
+    {
+      "id": "00000000-0000-4000-8000-000000000400",
+      "tableNumber": 1,
+      "status": "served",
+      "minutesAgo": 2800,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000100",
+          "quantity": 2,
+          "choiceIds": [],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000105",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000401",
+      "tableNumber": 2,
+      "status": "served",
+      "minutesAgo": 1500,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000101",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001001"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000106",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000402",
+      "tableNumber": 3,
+      "status": "served",
+      "minutesAgo": 500,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000102",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001007"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000107",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000403",
+      "tableNumber": 4,
+      "status": "cancelled",
+      "minutesAgo": 400,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000103",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001013"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000108",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000404",
+      "tableNumber": 5,
+      "status": "served",
+      "minutesAgo": 180,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000104",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001019"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000109",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000405",
+      "tableNumber": 6,
+      "status": "served",
+      "minutesAgo": 100,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000100",
+          "quantity": 2,
+          "choiceIds": [],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000105",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000406",
+      "tableNumber": 7,
+      "status": "received",
+      "minutesAgo": 2,
+      "notes": "Please bring water for the table.",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000101",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001001"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000106",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000407",
+      "tableNumber": 8,
+      "status": "preparing",
+      "minutesAgo": 18,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000102",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001007"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000107",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": "Eggs well done, please."
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000408",
+      "tableNumber": 9,
+      "status": "ready",
+      "minutesAgo": 8,
+      "notes": "",
+      "items": [
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000103",
+          "quantity": 2,
+          "choiceIds": ["00000000-0000-4000-8000-000000001013"],
+          "notes": ""
+        },
+        {
+          "menuItemId": "00000000-0000-4000-8000-000000000108",
+          "quantity": 1,
+          "choiceIds": [],
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}

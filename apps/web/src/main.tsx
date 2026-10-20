@@ -16,7 +16,15 @@ ReactDOM.createRoot(root).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FoundationPage />} />
-          <Route path="*" element={<main className="mx-auto max-w-xl p-8"><h1>Page not found</h1><Link to="/">Back to the cafe</Link></main>} />
+          <Route
+            path="*"
+            element={
+              <main className="mx-auto max-w-xl p-8">
+                <h1>Page not found</h1>
+                <Link to="/">Back to the cafe</Link>
+              </main>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

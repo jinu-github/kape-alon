@@ -3,27 +3,32 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
-  "engines": { "node": ">=24.0.0" },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "dev:web": "npm run dev -w @kape/web",
     "dev:api": "npm run dev -w @kape/api",
     "build": "npm run build -w @kape/shared && npm run build -w @kape/api && npm run build -w @kape/web",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck": "npm run build -w @kape/shared && npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
+    "test": "npm run build -w @kape/shared && vitest run",
     "db:generate": "npm run db:generate -w @kape/api",
     "db:migrate": "npm run db:migrate -w @kape/api",
     "seed": "npm run seed -w @kape/api"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.0.0",
-    "vitest": "^3.2.0"
+    "vitest": "^5.0.5"
   }
 }
