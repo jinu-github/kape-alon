@@ -1,8 +1,8 @@
 # Kape Alon
 
-A mobile-first QR-menu cafe ordering demo. **Phase 1 only:** workspace tooling, PostgreSQL schema and migration, validated JSON seeds, shared contracts, API health and a frontend foundation preview.
+A mobile-first QR-menu cafe ordering demo. **Phases 1 and 2:** PostgreSQL foundation, menu browsing, customizable items, cart, server-priced orders and live tracking.
 
-Ordering, live tracking, kitchen/admin screens and authentication are not implemented yet. Nothing has been deployed.
+Kitchen/admin screens and authentication belong to Phase 3. Nothing has been deployed.
 
 <!-- Screenshots: add 375px customer menu, live kitchen board and admin dashboard in Phase 4. -->
 
@@ -18,13 +18,13 @@ apps/api           Express + TypeScript, PostgreSQL/Drizzle, Socket.IO (Phase 2)
 packages/shared    Zod contracts, cafe config and order transition rules
 ```
 
-The browser will send item IDs, option IDs, quantities and notes. The API will load the catalog from PostgreSQL, validate availability and option selections, calculate integer-cent prices, and save immutable item snapshots. Live events will be emitted after successful transactions in Phase 2.
+The browser sends item IDs, option IDs, quantities and notes. The API loads the catalog from PostgreSQL, validates availability and option selections, calculates integer-cent prices, and saves immutable item snapshots in a transaction. The internal status service emits Socket.IO updates only after commit.
 
 Rename the cafe in **`packages/shared/src/config.ts`**. `kape-*` npm package identifiers are internal and need not change.
 
 ## Local setup
 
-Requirements: Node.js 24+, npm, Docker with Compose.
+Requirements: Node.js 24+, npm, and PostgreSQL. Use Docker Compose locally, or configure a dedicated Neon demo database in DATABASE_URL.
 
 Run these commands from this directory:
 
@@ -40,6 +40,8 @@ Copy-Item apps/web/.env.example apps/web/.env
 ```
 
 Start Postgres, build the shared package, apply migrations, then load sample data:
+
+For Neon, skip the Docker command. Keep existing configured environment files; copy the examples only for a new checkout.
 
 ```sh
 docker compose up -d --wait
@@ -74,7 +76,17 @@ npm test
 npm run format:check
 ```
 
-Tests use Vitest and a real ephemeral HTTP listener with an injected database probe. They validate health responses, CORS, errors, notes, status rules, prices, option selection and seed references. They do **not** replace a real PostgreSQL migration/seed smoke test.
+The default Vitest suite requires no database. It covers HTTP health/errors, shared validation, the full status-transition matrix, integer-cent pricing, selection limits and item/option availability. Database integration tests are intentionally skipped by the default command.
+
+For a seeded disposable database configured in apps/api/.env:
+
+    npm run test:integration
+    npm exec playwright -- install chromium
+    npm run test:e2e
+
+Integration tests exercise the real API, PostgreSQL persistence, rate limiting, Socket.IO room isolation, polling transport and reconnection. They temporarily toggle seeded option availability and restore it, then remove their own test orders. The Playwright suite uses a test-owned API on port 3001 and Vite on 5173; stop other instances before running it. It verifies the customer flow at 375px, keyboard focus, saved cart, live status events, reconnect recovery and loading/empty/error states. Screenshots are saved locally under qa/ (gitignored).
+
+Use the default localhost ports/origins for browser tests. No production status-update endpoint is exposed for testing.
 
 After changing `apps/api/src/db/schema.ts`:
 
@@ -94,8 +106,8 @@ These are intended settings, not a claim that deployment has been tested.
 - **API / Render:** repository root is this project directory. Build with `npm ci && npm run build -w @kape/shared && npm run build -w @kape/api`; start with `npm run start -w @kape/api`. Set `NODE_ENV=production`, `DATABASE_URL`, and `WEB_ORIGIN` to the exact HTTPS frontend origin, without a trailing slash. Render supplies `PORT`. Run migrations as a separate release operation before serving traffic.
 - **Web / Vercel:** build from the monorepo root with `npm ci && npm run build -w @kape/shared && npm run build -w @kape/web`; output directory is `apps/web/dist`. Set `VITE_API_URL` to the Render HTTPS origin. SPA rewrites for `/t/*`, order tracking, `/kitchen` and `/admin` are added in Phase 4.
 - **CORS / cookies:** fetch requests for future auth must use `credentials: 'include'`. Cross-site cookies need `HttpOnly; Secure; SameSite=None` and may still face browser third-party-cookie restrictions. Phase 3 must verify the deployment topology, CSRF defenses and login behavior.
-- **WebSocket:** Phase 2 will attach Socket.IO to the HTTP server, restrict its CORS origin, authenticate privileged rooms, and use the same public API origin and default `/socket.io` path. Verify both polling and WebSocket upgrades through Render before release.
-- **Sleeping API:** free Render instances may take time to wake. The preview already displays a friendly connecting message and supports retry; tune timeouts and reconnection behavior when implementing the customer flow.
+- **WebSocket:** Socket.IO is attached to the HTTP server at /socket.io with the configured frontend origin. Customer rooms use order UUIDs. Privileged kitchen rooms and authentication belong to Phase 3. Verify both polling and WebSocket upgrades through Render before release.
+- **Sleeping API:** The customer flow displays a friendly waking-up message, allows up to 60 seconds per request, and supports retry. Render free-tier wake-up timing remains to be verified during deployment.
 
 Provider limits and deployment details must be verified against current official documentation during Phase 4. No paid service is required or configured.
 
@@ -103,16 +115,45 @@ Provider limits and deployment details must be verified against current official
 
 - [x] Foundation source and initial migration
 - [ ] Run migration and seed smoke test against local Docker Postgres
-- [ ] Customer menu, cart, order creation and live tracking
+- [x] Customer menu, cart, order creation and live tracking
 - [ ] Kitchen, auth, admin, QR generator and reset
 - [ ] Accessibility/mobile QA, customer Playwright test, screenshots and deployment
 
 See `DECISIONS.md` for scope choices and approved supporting packages.
 
-## Phase 1 verification
+## Phase 1 verification (historical; see Phase 2 below)
 
 - Production build, strict type checks, ESLint and 13 Vitest tests pass.
 - bcrypt hashing/comparison and native Node TypeScript workspace imports were smoke-tested.
 - The initial Drizzle SQL migration was generated and inspected. Docker and `psql` are unavailable on the implementation machine, so real PostgreSQL migration/seed execution remains unverified.
 - The local browser preview timed out; visual QA at 375px remains unverified. The customer-flow Playwright test belongs to Phase 2/4.
+
+## Phase 2 review
+
+Open [table 5](http://localhost:5173/t/5) after starting the API and web app. Customize a Spanish Latte with Large and Extra espresso shot, add it to the cart, increase quantity to two, and place the order. The server-calculated total is PHP 490.00. The saved receipt opens at /orders/:id.
+
+Available API routes:
+
+| Route               | Behavior                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| GET /menu           | Categories, items, groups, choices and availability                                 |
+| GET /tables/:number | Validates an active table                                                           |
+| POST /orders        | Shared Zod validation, sanitized notes, database pricing, transactional persistence |
+| GET /orders/:id     | Saved receipt and current status                                                    |
+
+Customer tracking joins a Socket.IO room for its order UUID. The client starts with long-polling, upgrades to WebSockets when available, reconnects automatically and refetches the receipt on each reconnect. A 10-second read interval also recovers missed updates and stops for served/cancelled orders.
+
+Status changes are implemented in the internal customer service, with row locking and allowed-transition checks. The browser tests call that same service inside their API process and verify emitted events; the authenticated kitchen controls arrive in Phase 3. A normal newly placed order stays Received until that service is called.
+
+Order attempts are limited to ten per IP per minute in one API process. TRUST_PROXY_HOPS defaults to zero; set it only to the verified reverse-proxy hop count in deployment. Horizontal scaling would require a shared limiter and Socket.IO adapter.
+
+### Verification and remaining limits
+
+- Final checks: production build, strict typecheck (including tests), lint, 18 default Vitest tests and all four Playwright tests passed. The default suite skips the ten opt-in database tests; those passed separately against Neon.
+
+- Both migrations and the seed have run successfully against the configured Neon database. Integration checks confirmed 25 menu items, five categories, ten tables, two hashed demo users and nine sample orders.
+- Ten real-database integration tests passed, including room isolation, polling-only delivery, reconnect recovery, server pricing and persisted status transitions.
+- The local 375px customer flow passed, including a real Socket.IO status update and forced transport reconnect. Mobile item/cart sheets and tracking screenshots were visually inspected; the sheet-width issue found during review was fixed.
+- Local Docker Postgres, Safari/Firefox, physical mobile devices, deployed Vercel/Render routing and Render wake-up behavior remain unverified. The implementation is local-only.
+- The pg driver reports a future SSL-mode semantics warning for the configured connection URL. Certificate verification has not been disabled; use explicit sslmode=verify-full when configuring future URLs to preserve the current verification behavior.
 - `npm audit --omit=dev` reports zero vulnerabilities. Full audit reports four moderate findings in Drizzle Kit's transitive `@esbuild-kit`/esbuild development tooling. No high or critical findings remain. Do not run the suggested forced downgrade blindly; reassess migration-tool upgrades before deployment.
