@@ -39,12 +39,14 @@ export const categoryInputSchema = z.strictObject({
   sortOrder: z.number().int().min(0).default(0),
 });
 export const optionChoiceSchema = z.strictObject({
+  available: z.boolean().default(true),
   id: idSchema,
   name: z.string().trim().min(1).max(80),
   priceCents: moneySchema,
 });
 export const optionGroupSchema = z
   .strictObject({
+    available: z.boolean().default(true),
     id: idSchema,
     name: z.string().trim().min(1).max(80),
     minSelections: z.number().int().min(0).max(10),
@@ -137,3 +139,35 @@ export const healthResponseSchema = z.object({
   database: z.enum(['up', 'down']),
 });
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
+
+export const menuResponseSchema = z.object({
+  categories: z.array(categoryInputSchema.extend({ id: idSchema })),
+  items: z.array(menuItemSchema),
+});
+export const tableResponseSchema = z.object({
+  number: tableNumberSchema,
+  active: z.literal(true),
+});
+export const orderResponseSchema = z.object({
+  id: idSchema,
+  tableNumber: tableNumberSchema,
+  status: orderStatusSchema,
+  notes: z.string(),
+  totalCents: z.number().int().nonnegative(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+  items: z.array(
+    z.object({
+      id: idSchema,
+      name: z.string(),
+      quantity: z.number().int().positive(),
+      unitPriceCents: z.number().int().nonnegative(),
+      notes: z.string(),
+      choices: z.array(
+        z.object({ id: idSchema, name: z.string(), priceCents: moneySchema }),
+      ),
+    }),
+  ),
+});
+export type MenuResponse = z.infer<typeof menuResponseSchema>;
+export type OrderResponse = z.infer<typeof orderResponseSchema>;

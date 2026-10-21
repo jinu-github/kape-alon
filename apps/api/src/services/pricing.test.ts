@@ -21,6 +21,54 @@ const input = {
 };
 
 describe('server pricing and seed integrity', () => {
+  it('rejects unavailable option choices and required groups', () => {
+    const unavailableChoice = {
+      ...latte,
+      options: latte.options.map((group) => ({
+        ...group,
+        choices: group.choices.map((choice) => ({
+          ...choice,
+          available: choice.id !== shot.id,
+        })),
+      })),
+    };
+    expect(() => priceOrderItems([input], [unavailableChoice])).toThrow(
+      'unavailable',
+    );
+    const unavailableGroup = {
+      ...latte,
+      options: latte.options.map((group, index) => ({
+        ...group,
+        available: index !== 0,
+      })),
+    };
+    expect(() => priceOrderItems([input], [unavailableGroup])).toThrow(
+      'unavailable',
+    );
+  });
+  it('permits omitting unavailable optional groups but not selecting from them', () => {
+    const item = {
+      ...latte,
+      options: latte.options.map((group) => ({
+        ...group,
+        available: group.minSelections > 0,
+      })),
+    };
+    expect(
+      priceOrderItems([{ ...input, choiceIds: [size.id] }], [item])[0]
+        ?.unitPriceCents,
+    ).toBe(20000);
+    expect(() => priceOrderItems([input], [item])).toThrow('unavailable');
+  });
+  it('rejects too many selections and totals outside PostgreSQL integer range', () => {
+    const choices = latte.options[0]!.choices.map((choice) => choice.id);
+    expect(() =>
+      priceOrderItems([{ ...input, choiceIds: choices }], [latte]),
+    ).toThrow('Check selections');
+    expect(() =>
+      calculateTotal([{ unitPriceCents: 2_147_483_647, quantity: 2 }]),
+    ).toThrow('range');
+  });
   it('prices selected options per unit using integer cents', () => {
     const items = priceOrderItems([input], seed.menuItems);
     expect(items[0]?.unitPriceCents).toBe(24500);

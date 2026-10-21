@@ -3,13 +3,19 @@ import type { ErrorRequestHandler } from 'express';
 import { z } from 'zod';
 import { getHealth } from './services/health.ts';
 import type { DatabaseProbe } from './services/health.ts';
+import { customerRouter } from './routes/customer.ts';
+import type { CustomerService } from './services/customer.ts';
+import { ServiceError } from './services/errors.ts';
 
 export function createApp(options: {
   probe: DatabaseProbe;
   webOrigin: string;
+  customer?: CustomerService;
+  trustProxyHops?: number;
 }) {
   const app = express();
   app.disable('x-powered-by');
+  app.set('trust proxy', options.trustProxyHops ?? 0);
   app.use((req, res, next) => {
     res.setHeader('Vary', 'Origin');
     if (req.headers.origin === options.webOrigin) {
@@ -28,11 +34,25 @@ export function createApp(options: {
     next();
   });
   app.use(express.json({ limit: '32kb' }));
+  app.use((req, _res, next) => {
+    if (
+      req.method === 'POST' &&
+      req.headers.origin &&
+      req.headers.origin !== options.webOrigin
+    )
+      throw new ServiceError(
+        403,
+        'ORIGIN_DENIED',
+        'This request origin is not allowed.',
+      );
+    next();
+  });
   app.get('/health', async (req, res) => {
     z.strictObject({}).parse(req.query);
     const health = await getHealth(options.probe);
     res.status(health.status === 'ok' ? 200 : 503).json(health);
   });
+  if (options.customer) app.use(customerRouter(options.customer));
   app.use((_req, res) => {
     res
       .status(404)
@@ -44,6 +64,12 @@ export function createApp(options: {
     res,
     _next,
   ) => {
+    if (error instanceof ServiceError) {
+      res
+        .status(error.status)
+        .json({ error: { code: error.code, message: error.message } });
+      return;
+    }
     if (error instanceof z.ZodError) {
       res.status(400).json({
         error: {

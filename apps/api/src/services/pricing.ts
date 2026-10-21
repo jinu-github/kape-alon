@@ -12,6 +12,14 @@ export function priceOrderItems(
     if (selectedIds.size !== input.choiceIds.length)
       throw new Error('Duplicate option choices.');
     const choices = item.options.flatMap((group) => {
+      if (!group.available) {
+        if (
+          group.minSelections > 0 ||
+          group.choices.some((choice) => selectedIds.has(choice.id))
+        )
+          throw new Error('Option group is unavailable.');
+        return [];
+      }
       const selected = group.choices.filter((choice) =>
         selectedIds.has(choice.id),
       );
@@ -20,6 +28,8 @@ export function priceOrderItems(
         selected.length > group.maxSelections
       )
         throw new Error(`Check selections for ${group.name}.`);
+      if (selected.some((choice) => !choice.available))
+        throw new Error('Option choice is unavailable.');
       return selected;
     });
     if (choices.length !== selectedIds.size)

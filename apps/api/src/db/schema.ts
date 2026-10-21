@@ -48,6 +48,7 @@ export const menuItems = pgTable(
 export const itemOptions = pgTable(
   'item_options',
   {
+    available: boolean('available').notNull().default(true),
     id: uuid('id').primaryKey().defaultRandom(),
     menuItemId: uuid('menu_item_id')
       .notNull()
@@ -68,6 +69,7 @@ export const itemOptions = pgTable(
 export const optionChoices = pgTable(
   'option_choices',
   {
+    available: boolean('available').notNull().default(true),
     id: uuid('id').primaryKey().defaultRandom(),
     optionGroupId: uuid('option_group_id')
       .notNull()

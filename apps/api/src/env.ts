@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
