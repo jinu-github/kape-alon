@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cafeConfig } from '@kape/shared';
 import { FoundationPage } from './pages/FoundationPage';
+import { MenuPage } from './pages/MenuPage';
+import { OrderPage } from './pages/OrderPage';
 import './styles.css';
 
 document.title = `${cafeConfig.name} · Cafe ordering demo`;
@@ -16,6 +18,8 @@ ReactDOM.createRoot(root).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FoundationPage />} />
+          <Route path="/t/:tableNumber" element={<MenuPage />} />
+          <Route path="/orders/:id" element={<OrderPage />} />
           <Route
             path="*"
             element={

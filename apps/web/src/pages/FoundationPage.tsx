@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { cafeConfig, healthResponseSchema } from '@kape/shared';
+import { Link } from 'react-router';
 
 async function fetchHealth() {
   const response = await fetch(
@@ -49,15 +50,18 @@ export function FoundationPage() {
           className="rounded-2xl border border-[#243f35]/20 bg-white/60 p-6 sm:p-8"
         >
           <p className="text-xs font-semibold uppercase tracking-widest">
-            Development preview · Phase 1
+            Development preview · Phase 2
           </p>
           <h2 id="foundation-title" className="mt-3 font-serif text-2xl">
             The essentials are in place.
           </h2>
           <p className="mt-3 text-sm leading-6">
-            Menu browsing and ordering arrive in Phase 2. This preview checks
-            the connection to the API and database.
+            Scan, choose, and relax. The customer flow is ready to try at table
+            5.
           </p>
+          <Link className="button mt-6" to={'/t/' + cafeConfig.demoTable}>
+            Try as a customer →
+          </Link>
           <div
             role="status"
             aria-live="polite"

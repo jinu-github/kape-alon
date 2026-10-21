@@ -3,3 +3,6 @@ dist
 package-lock.json
 apps/api/drizzle/meta
 coverage
+test-results
+playwright-report
+qa
