@@ -1,4 +1,6 @@
 import express from 'express';
+import type { AuthService } from './services/auth.ts';
+import { staffRouter } from './routes/staff.ts';
 import type { ErrorRequestHandler } from 'express';
 import { z } from 'zod';
 import { getHealth } from './services/health.ts';
@@ -11,6 +13,7 @@ export function createApp(options: {
   probe: DatabaseProbe;
   webOrigin: string;
   customer?: CustomerService;
+  auth?: AuthService;
   trustProxyHops?: number;
 }) {
   const app = express();
@@ -36,7 +39,7 @@ export function createApp(options: {
   app.use(express.json({ limit: '32kb' }));
   app.use((req, _res, next) => {
     if (
-      req.method === 'POST' &&
+      ['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method) &&
       req.headers.origin &&
       req.headers.origin !== options.webOrigin
     )
@@ -52,6 +55,8 @@ export function createApp(options: {
     const health = await getHealth(options.probe);
     res.status(health.status === 'ok' ? 200 : 503).json(health);
   });
+  if (options.auth && options.customer)
+    app.use(staffRouter(options.auth, options.customer, options.webOrigin));
   if (options.customer) app.use(customerRouter(options.customer));
   app.use((_req, res) => {
     res

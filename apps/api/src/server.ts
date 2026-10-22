@@ -1,3 +1,4 @@
+import { createAuthService, databaseAuthStore } from './services/auth.ts';
 import { createApp } from './app.ts';
 import { db, pool } from './db/client.ts';
 import { env } from './env.ts';
@@ -9,8 +10,15 @@ pool.on('error', (error) =>
   console.error('Idle database connection failed', error.message),
 );
 const customer = createCustomerService(db);
+const auth = createAuthService(databaseAuthStore(db), {
+  secret: env.JWT_SECRET,
+  production: env.NODE_ENV === 'production',
+  demoMode: env.DEMO_MODE,
+  ...(env.DEMO_PASSWORD ? { demoPassword: env.DEMO_PASSWORD } : {}),
+});
 const app = createApp({
   customer,
+  auth,
   trustProxyHops: env.TRUST_PROXY_HOPS,
   webOrigin: env.WEB_ORIGIN,
   probe: async () => {
@@ -18,7 +26,7 @@ const app = createApp({
   },
 });
 const server = createServer(app);
-const io = attachRealtime(server, customer, env.WEB_ORIGIN);
+const io = attachRealtime(server, customer, env.WEB_ORIGIN, auth);
 server.listen(env.PORT, () => {
   console.log(`API listening on http://localhost:${env.PORT}`);
 });

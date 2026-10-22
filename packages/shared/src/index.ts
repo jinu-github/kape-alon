@@ -11,6 +11,16 @@ export const orderStatuses = [
 export const orderStatusSchema = z.enum(orderStatuses);
 export type OrderStatus = z.infer<typeof orderStatusSchema>;
 export const roleSchema = z.enum(['kitchen', 'admin']);
+export const staffUserSchema = z.object({
+  id: z.uuid(),
+  email: z.email(),
+  role: roleSchema,
+});
+export type StaffUser = z.infer<typeof staffUserSchema>;
+export const demoAccessSchema = z.object({
+  email: z.email(),
+  password: z.string(),
+});
 export const idSchema = z.uuid();
 export const moneySchema = z.number().int().min(0).max(10_000_000);
 export const tableNumberSchema = z.number().int().min(1).max(999);

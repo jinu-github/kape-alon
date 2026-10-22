@@ -34,7 +34,7 @@ try {
   });
   await db.transaction(async (tx) => {
     await tx.execute(
-      sql`TRUNCATE order_items, orders, option_choices, item_options, menu_items, categories, tables, users`,
+      sql`TRUNCATE auth_sessions, order_items, orders, option_choices, item_options, menu_items, categories, tables, users`,
     );
     await tx.insert(schema.categories).values(seed.categories);
     await tx.insert(schema.tables).values(seed.tables);

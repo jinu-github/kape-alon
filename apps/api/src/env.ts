@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  JWT_SECRET: z.string().min(32),
+  DEMO_MODE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  DEMO_PASSWORD: z.string().min(8).max(72).optional(),
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
   NODE_ENV: z
     .enum(['development', 'test', 'production'])

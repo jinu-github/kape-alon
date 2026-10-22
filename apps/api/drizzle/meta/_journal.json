@@ -15,6 +15,13 @@
       "when": 1792545975342,
       "tag": "0001_safe_forgotten_one",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792634419179,
+      "tag": "0002_medical_silver_fox",
+      "breakpoints": true
     }
   ]
 }

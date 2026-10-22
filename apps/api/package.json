@@ -10,13 +10,15 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.tools.json",
     "db:generate": "node --env-file-if-exists=.env ../../node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --env-file-if-exists=.env --conditions=development scripts/migrate.ts",
-    "seed": "node --env-file-if-exists=.env --conditions=development scripts/seed.ts"
+    "seed": "node --env-file-if-exists=.env --conditions=development scripts/seed.ts",
+    "seed:images": "node --env-file-if-exists=.env --conditions=development scripts/sync-seed-images.ts"
   },
   "dependencies": {
     "@kape/shared": "*",
     "bcrypt": "^6.0.0",
     "drizzle-orm": "^0.45.4",
     "express": "^5.1.0",
+    "jose": "^6.2.13",
     "pg": "^8.16.0",
     "socket.io": "^4.8.0",
     "zod": "^4.0.0"

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { asc, eq, sql } from 'drizzle-orm';
+import { asc, eq, inArray, sql } from 'drizzle-orm';
 import {
   canTransition,
   menuResponseSchema,
@@ -91,7 +91,7 @@ export function createCustomerService(database: Database) {
     });
   }
   async function create(input: CreateOrderInput) {
-    return database.transaction(async (tx) => {
+    const createdOrder = await database.transaction(async (tx) => {
       // Shared locks allow concurrent orders but prevent catalog changes while pricing.
       await tx.execute(
         sql.raw(
@@ -126,6 +126,8 @@ export function createCustomerService(database: Database) {
         .values(items.map((item) => ({ ...item, orderId: created.id })));
       return order(created.id, tx);
     });
+    events.emit('created', createdOrder);
+    return createdOrder;
   }
   // Phase 3 will call this service from authenticated kitchen routes.
   async function setStatus(id: string, status: OrderStatus) {
@@ -152,6 +154,32 @@ export function createCustomerService(database: Database) {
     events.emit('updated', updated);
     return updated;
   }
-  return { menu, table, order, create, setStatus, events };
+  async function activeOrders() {
+    const records = await database
+      .select()
+      .from(s.orders)
+      .where(inArray(s.orders.status, ['received', 'preparing', 'ready']))
+      .orderBy(asc(s.orders.createdAt));
+    if (!records.length) return [];
+    const items = await database
+      .select()
+      .from(s.orderItems)
+      .where(
+        inArray(
+          s.orderItems.orderId,
+          records.map((record) => record.id),
+        ),
+      )
+      .orderBy(asc(s.orderItems.id));
+    return records.map((record) =>
+      orderResponseSchema.parse({
+        ...record,
+        createdAt: record.createdAt.toISOString(),
+        updatedAt: record.updatedAt.toISOString(),
+        items: items.filter((item) => item.orderId === record.id),
+      }),
+    );
+  }
+  return { menu, table, order, create, setStatus, activeOrders, events };
 }
 export type CustomerService = ReturnType<typeof createCustomerService>;
