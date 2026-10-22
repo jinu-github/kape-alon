@@ -17,7 +17,7 @@ export class ApiError extends Error {
     this.status = status;
   }
 }
-async function request<T>(
+export async function request<T>(
   path: string,
   schema: z.ZodType<T>,
   init?: RequestInit,
@@ -26,17 +26,19 @@ async function request<T>(
   try {
     response = await fetch(apiOrigin + path, {
       ...init,
+      credentials: 'include',
       signal: AbortSignal.timeout(60000),
     });
   } catch {
     throw new ApiError(
       0,
-      init?.method === 'POST'
+      path === '/orders' && init?.method === 'POST'
         ? 'We could not confirm your order. Please check with the cafe team before trying again to avoid ordering twice.'
         : 'The cafe server is taking a moment. Please try again.',
     );
   }
-  const body: unknown = await response.json();
+  const body: unknown =
+    response.status === 204 ? undefined : await response.json();
   if (!response.ok) {
     const error = apiErrorSchema.safeParse(body);
     throw new ApiError(

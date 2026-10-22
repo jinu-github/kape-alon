@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes, Link } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cafeConfig } from '@kape/shared';
-import { FoundationPage } from './pages/FoundationPage';
+import { LandingPage } from './pages/LandingPage';
+import { LoginPage } from './pages/LoginPage';
+import { KitchenPage } from './pages/KitchenPage';
+import { AdminPage } from './pages/AdminPage';
 import { MenuPage } from './pages/MenuPage';
 import { OrderPage } from './pages/OrderPage';
 import './styles.css';
@@ -17,7 +20,10 @@ ReactDOM.createRoot(root).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<FoundationPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/kitchen" element={<KitchenPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/t/:tableNumber" element={<MenuPage />} />
           <Route path="/orders/:id" element={<OrderPage />} />
           <Route

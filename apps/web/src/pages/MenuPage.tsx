@@ -67,6 +67,43 @@ function TableMenu({ table }: { table: number }) {
       /* In-memory cart remains usable. */
     }
   }, [lines, table]);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const sections = [
+          ...document.querySelectorAll<HTMLElement>('.menu-category'),
+        ];
+        const tabs = document.querySelector<HTMLElement>('.category-tabs');
+        let current = sections[0];
+        for (const section of sections)
+          if (
+            section.getBoundingClientRect().top <=
+            (tabs?.offsetHeight ?? 70) + 24
+          )
+            current = section;
+        if (current) setActiveCategory(current.id.replace('category-', ''));
+      });
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [menu.data, search]);
+  useEffect(() => {
+    const tab = document.querySelector<HTMLElement>('.category-tabs .active');
+    const nav = tab?.parentElement;
+    if (tab && nav)
+      nav.scrollTo({
+        left: tab.offsetLeft - nav.offsetLeft - 12,
+        behavior: 'smooth',
+      });
+  }, [activeCategory]);
   const total = lines.reduce(
     (sum, line) => sum + linePrice(line) * line.quantity,
     0,
@@ -145,6 +182,11 @@ function TableMenu({ table }: { table: number }) {
                     (activeCategory || data.categories[0]?.id) === category.id
                       ? 'active'
                       : ''
+                  }
+                  aria-current={
+                    (activeCategory || data.categories[0]?.id) === category.id
+                      ? 'location'
+                      : undefined
                   }
                   onClick={() => setActiveCategory(category.id)}
                 >
