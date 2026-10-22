@@ -1,6 +1,19 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  ALLOW_DEMO_RESET: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  CUSTOMER_BASE_URL: z
+    .url()
+    .refine(
+      (value) =>
+        ['http:', 'https:'].includes(new URL(value).protocol) &&
+        new URL(value).origin === value,
+      'Use an HTTP(S) origin without trailing slash',
+    )
+    .optional(),
   JWT_SECRET: z.string().min(32),
   DEMO_MODE: z
     .enum(['true', 'false'])

@@ -17,9 +17,7 @@ export type AuthConfig = {
   demoPassword?: string;
 };
 export type AuthStore = {
-  findByEmail: (
-    email: string,
-  ) => Promise<
+  findByEmail: (email: string) => Promise<
     | {
         id: string;
         email: string;

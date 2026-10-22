@@ -89,10 +89,19 @@ export function attachRealtime(
   };
   const onRevoked = (sessionId: string) =>
     kitchen.in('session:' + sessionId).disconnectSockets(true);
+  const onMenu = () => io.emit('menu:changed');
+  const onReset = () => {
+    kitchen.disconnectSockets(true);
+    io.emit('demo:reset');
+  };
+  service.events.on('menu', onMenu);
+  service.events.on('reset', onReset);
   service.events.on('created', onCreated);
   service.events.on('updated', onUpdated);
   auth?.events.on('revoked', onRevoked);
   server.on('close', () => {
+    service.events.off('menu', onMenu);
+    service.events.off('reset', onReset);
     service.events.off('created', onCreated);
     service.events.off('updated', onUpdated);
     auth?.events.off('revoked', onRevoked);

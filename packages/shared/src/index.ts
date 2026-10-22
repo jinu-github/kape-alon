@@ -181,3 +181,61 @@ export const orderResponseSchema = z.object({
 });
 export type MenuResponse = z.infer<typeof menuResponseSchema>;
 export type OrderResponse = z.infer<typeof orderResponseSchema>;
+
+export const adminItemInputSchema = menuItemInputSchema
+  .extend({ options: z.array(optionGroupSchema).max(10) })
+  .superRefine((item, ctx) => {
+    const ids = item.options.flatMap((group) => [
+      group.id,
+      ...group.choices.map((choice) => choice.id),
+    ]);
+    if (new Set(ids).size !== ids.length)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Option and choice IDs must be unique.',
+      });
+  });
+export type AdminItemInput = z.infer<typeof adminItemInputSchema>;
+export const adminCategorySchema = categoryInputSchema.extend({ id: z.uuid() });
+export const historyFilterSchema = z
+  .strictObject({
+    from: z.iso.date().optional(),
+    to: z.iso.date().optional(),
+    status: orderStatusSchema.optional(),
+    page: z.coerce.number().int().min(1).max(10000).default(1),
+  })
+  .superRefine((value, ctx) => {
+    if (value.from && value.to && value.from > value.to)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Start date must not be after end date.',
+      });
+  });
+export type HistoryFilter = z.infer<typeof historyFilterSchema>;
+export const historyResponseSchema = z.object({
+  orders: z.array(orderResponseSchema.omit({ items: true })),
+  hasMore: z.boolean(),
+});
+export const dashboardSchema = z.object({
+  date: z.iso.date(),
+  timezone: z.string(),
+  ordersToday: z.number().int().nonnegative(),
+  revenueTodayCents: z.number().nonnegative(),
+  topItems: z.array(
+    z.object({ name: z.string(), quantity: z.number().int().nonnegative() }),
+  ),
+  hours: z.array(
+    z.object({
+      hour: z.number().int().min(0).max(23),
+      count: z.number().int().nonnegative(),
+    }),
+  ),
+});
+export const adminSettingsSchema = z.object({
+  resetEnabled: z.boolean(),
+  customerBaseUrl: z.url(),
+  tables: z.array(z.number().int()),
+});
+export const resetSchema = z.strictObject({
+  confirmation: z.literal('RESET DEMO DATA'),
+});

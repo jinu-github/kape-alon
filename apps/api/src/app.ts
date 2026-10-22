@@ -1,4 +1,6 @@
 import express from 'express';
+import { adminRouter } from './routes/admin.ts';
+import type { AdminService } from './services/admin.ts';
 import type { AuthService } from './services/auth.ts';
 import { staffRouter } from './routes/staff.ts';
 import type { ErrorRequestHandler } from 'express';
@@ -14,6 +16,7 @@ export function createApp(options: {
   webOrigin: string;
   customer?: CustomerService;
   auth?: AuthService;
+  admin?: AdminService;
   trustProxyHops?: number;
 }) {
   const app = express();
@@ -27,7 +30,7 @@ export function createApp(options: {
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       res.setHeader(
         'Access-Control-Allow-Methods',
-        'GET,POST,PATCH,DELETE,OPTIONS',
+        'GET,POST,PUT,PATCH,DELETE,OPTIONS',
       );
     }
     if (req.method === 'OPTIONS') {
@@ -57,6 +60,16 @@ export function createApp(options: {
   });
   if (options.auth && options.customer)
     app.use(staffRouter(options.auth, options.customer, options.webOrigin));
+  if (options.auth && options.admin && options.customer)
+    app.use(
+      '/admin',
+      adminRouter(
+        options.auth,
+        options.admin,
+        options.customer,
+        options.webOrigin,
+      ),
+    );
   if (options.customer) app.use(customerRouter(options.customer));
   app.use((_req, res) => {
     res
@@ -86,6 +99,28 @@ export function createApp(options: {
           })),
         },
       });
+      return;
+    }
+    const constraint = z
+      .object({ code: z.string() })
+      .safeParse(
+        error instanceof Error && 'cause' in error ? error.cause : error,
+      );
+    if (
+      constraint.success &&
+      ['23503', '23505'].includes(constraint.data.code)
+    ) {
+      res
+        .status(409)
+        .json({
+          error: {
+            code: 'CATALOG_CONFLICT',
+            message:
+              constraint.data.code === '23503'
+                ? 'This record is in use or its category no longer exists. Move items before deleting a category.'
+                : 'That name or option ID already exists. Refresh and try again.',
+          },
+        });
       return;
     }
     const bodyError = z.object({ type: z.string() }).safeParse(error);

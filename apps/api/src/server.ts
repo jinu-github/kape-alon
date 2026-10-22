@@ -1,4 +1,6 @@
 import { createAuthService, databaseAuthStore } from './services/auth.ts';
+import { createAdminService } from './services/admin.ts';
+import { seedDatabase } from './services/seed.ts';
 import { createApp } from './app.ts';
 import { db, pool } from './db/client.ts';
 import { env } from './env.ts';
@@ -16,7 +18,15 @@ const auth = createAuthService(databaseAuthStore(db), {
   demoMode: env.DEMO_MODE,
   ...(env.DEMO_PASSWORD ? { demoPassword: env.DEMO_PASSWORD } : {}),
 });
+const admin = createAdminService(db, customer, {
+  resetEnabled: env.ALLOW_DEMO_RESET,
+  customerBaseUrl: env.CUSTOMER_BASE_URL ?? env.WEB_ORIGIN,
+  reset: async () => {
+    await seedDatabase(db, env.DEMO_PASSWORD ?? '', env.ALLOW_DEMO_RESET);
+  },
+});
 const app = createApp({
+  admin,
   customer,
   auth,
   trustProxyHops: env.TRUST_PROXY_HOPS,
