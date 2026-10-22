@@ -157,3 +157,45 @@ Order attempts are limited to ten per IP per minute in one API process. TRUST_PR
 - Local Docker Postgres, Safari/Firefox, physical mobile devices, deployed Vercel/Render routing and Render wake-up behavior remain unverified. The implementation is local-only.
 - The pg driver reports a future SSL-mode semantics warning for the configured connection URL. Certificate verification has not been disabled; use explicit sslmode=verify-full when configuring future URLs to preserve the current verification behavior.
 - `npm audit --omit=dev` reports zero vulnerabilities. Full audit reports four moderate findings in Drizzle Kit's transitive `@esbuild-kit`/esbuild development tooling. No high or critical findings remain. Do not run the suggested forced downgrade blindly; reassess migration-tool upgrades before deployment.
+
+## Phase 3A: staff access and kitchen
+
+Run commands from `D:\kape-alon`. Keep the API and frontend in separate terminals:
+
+```powershell
+npm run db:migrate
+npm run dev:api
+```
+
+```powershell
+npm run dev:web
+```
+
+In `apps/api/.env`, set a random `JWT_SECRET` (at least 32 characters), `DEMO_MODE=true`, and the same `DEMO_PASSWORD` used when seeding. See `apps/api/.env.example`. Never expose JWT_SECRET through Vite. Existing installations can update only the seed photos with `npm run seed:images -w @kape/api`; this preserves orders. Do not run the full seed just to update photos.
+
+Open [the landing page](http://localhost:5173). **Open kitchen board** and **Open admin** lead to pre-filled demo login forms. Sign in to continue. Admin management features are intentionally deferred; the admin entry confirms role-protected access.
+
+The kitchen board shows New, Preparing and Ready orders, options, notes, elapsed time and age warnings. Click **Start preparing → Mark ready → Mark served**. A separate customer's tracking page updates live. Served orders leave the board. New tickets receive a visible highlight. Sign out clears and revokes the session.
+
+New API routes: `POST /login`, `POST /logout`, `GET /me`, `GET /demo-access/:role` (demo mode only), `GET /kitchen/orders`, `PATCH /kitchen/orders/:id/status`, and admin-only `GET /admin/access`. Staff writes require the configured Origin header and cookie; login returns a safe user profile, never the JWT in JSON.
+
+Production needs HTTPS, NODE_ENV=production, exact WEB_ORIGIN and VITE_API_URL values, credentialed CORS and Socket.IO cookies. Vercel-to-Render cookies use SameSite=None; Secure. Browsers that block third-party cookies require a same-site deployment or compatible same-origin proxy. See DECISIONS.md for details; a production cross-domain deployment has not been tested.
+
+Focused checks:
+
+```powershell
+npm run build
+npm run typecheck
+npm run lint
+npm test
+npm run test:e2e -- e2e/kitchen.spec.ts
+```
+
+The Playwright test starts its own API, needs the migrated seeded DATABASE_URL, uses ports 3001/5173, and deletes only its own order. Stop development servers before running it. Screenshots are saved locally under `qa/kitchen-tablet.png` and `qa/menu-fixes-375.png`.
+
+### Phase 3A verification
+
+- Build, strict typecheck, lint and 25 default Vitest tests passed. The ten existing opt-in database tests were not rerun.
+- Both focused Playwright tests passed against Neon: customer-to-kitchen live status changes (including rejected skipped transitions), seeded kitchen/admin login, logout, tablet layout, and the four menu regressions. Tablet kitchen and 375px menu screenshots were inspected.
+- Migration 0002 and image-only sync succeeded against Neon without resetting orders. All ten distinct stock image URLs returned HTTP 200 after replacing one broken cold-drink URL.
+- Not verified: deployed Vercel/Render cross-site cookies, production proxy/WebSocket setup, Render wake-up, Safari/Firefox, physical devices, and local Docker Postgres. No Phase 3B admin tools were built.
