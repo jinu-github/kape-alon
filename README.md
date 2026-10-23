@@ -98,18 +98,9 @@ npm run db:migrate
 
 Review and commit generated SQL and metadata. Use migrations rather than schema push. `docker compose down` preserves the database volume.
 
-## Deployment plan (Phase 4)
+## Deployment configuration
 
-These are intended settings, not a claim that deployment has been tested.
-
-- **Postgres:** create a Neon or Supabase database; use its PostgreSQL connection URL and TLS settings as `DATABASE_URL`. Never disable certificate verification. Use a direct connection for migrations when required by the provider; the API's `pg` pool is capped at five connections.
-- **API / Render:** repository root is this project directory. Build with `npm ci && npm run build -w @kape/shared && npm run build -w @kape/api`; start with `npm run start -w @kape/api`. Set `NODE_ENV=production`, `DATABASE_URL`, and `WEB_ORIGIN` to the exact HTTPS frontend origin, without a trailing slash. Render supplies `PORT`. Run migrations as a separate release operation before serving traffic.
-- **Web / Vercel:** build from the monorepo root with `npm ci && npm run build -w @kape/shared && npm run build -w @kape/web`; output directory is `apps/web/dist`. Set `VITE_API_URL` to the Render HTTPS origin. SPA rewrites for `/t/*`, order tracking, `/kitchen` and `/admin` are added in Phase 4.
-- **CORS / cookies:** fetch requests for future auth must use `credentials: 'include'`. Cross-site cookies need `HttpOnly; Secure; SameSite=None` and may still face browser third-party-cookie restrictions. Phase 3 must verify the deployment topology, CSRF defenses and login behavior.
-- **WebSocket:** Socket.IO is attached to the HTTP server at /socket.io with the configured frontend origin. Customer rooms use order UUIDs. Privileged kitchen rooms and authentication belong to Phase 3. Verify both polling and WebSocket upgrades through Render before release.
-- **Sleeping API:** The customer flow displays a friendly waking-up message, allows up to 60 seconds per request, and supports retry. Render free-tier wake-up timing remains to be verified during deployment.
-
-Provider limits and deployment details must be verified against current official documentation during Phase 4. No paid service is required or configured.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the exact Render free service and Vercel settings, Neon migrations, environment variables, cross-site cookies and post-deploy checks. Root `render.yaml` and `apps/web/vercel.json` are ready to configure; nothing has been deployed.
 
 ## Phase checklist
 

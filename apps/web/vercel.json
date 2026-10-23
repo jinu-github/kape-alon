@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "cd ../.. && npx --yes npm@11.19.0 ci --include=dev --ignore-scripts=false",
+  "buildCommand": "cd ../.. && npm run build -w @kape/shared && npm run build -w @kape/web",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

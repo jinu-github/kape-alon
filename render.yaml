@@ -1,0 +1,32 @@
+# Repository root is D:\kape-alon locally. Existing Neon is configured via DATABASE_URL.
+services:
+  - type: web
+    name: kape-alon-api
+    runtime: node
+    plan: free
+    rootDir: .
+    autoDeployTrigger: off
+    buildCommand: npx --yes npm@11.19.0 ci --include=dev --ignore-scripts=false && node scripts/verify-native.mjs && npm run build -w @kape/shared && npm run build -w @kape/api
+    startCommand: npm run start -w @kape/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.20.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEB_ORIGIN
+        sync: false
+      - key: CUSTOMER_BASE_URL
+        sync: false
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: DEMO_MODE
+        value: 'true'
+      - key: ALLOW_DEMO_RESET
+        value: 'false'
+      - key: TRUST_PROXY_HOPS
+        value: '1'
