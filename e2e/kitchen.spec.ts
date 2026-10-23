@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { eq } from 'drizzle-orm';
+import { createAdminService } from '../apps/api/src/services/admin.ts';
 import { createServer } from 'node:http';
 import { createCustomerService } from '../apps/api/src/services/customer.ts';
 import {
@@ -22,6 +23,13 @@ const auth = createAuthService(databaseAuthStore(db), {
 const server = createServer(
   createApp({
     customer: service,
+    admin: createAdminService(db, service, {
+      resetEnabled: false,
+      customerBaseUrl: 'http://localhost:5173',
+      reset: async () => {
+        throw new Error('Reset disabled in this test');
+      },
+    }),
     auth,
     webOrigin: 'http://localhost:5173',
     probe: async () => {
@@ -147,7 +155,7 @@ test('customer order arrives at tablet kitchen and every status updates tracking
     await kitchen.getByRole('button', { name: 'Sign in', exact: true }).click();
     await expect(kitchen).toHaveURL('http://localhost:5173/admin');
     await expect(
-      kitchen.getByRole('heading', { name: 'You’re signed in.' }),
+      kitchen.getByRole('heading', { name: 'Cafe management' }),
     ).toBeVisible();
     await kitchen
       .getByRole('button', { name: 'Sign out', exact: true })

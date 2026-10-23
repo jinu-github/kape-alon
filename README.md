@@ -1,8 +1,8 @@
 # Kape Alon
 
-A mobile-first QR-menu cafe ordering demo. **Phases 1 and 2:** PostgreSQL foundation, menu browsing, customizable items, cart, server-priced orders and live tracking.
+A mobile-first QR-menu cafe ordering demo. **Through Phase 3B:** customer ordering, live tracking, staff authentication, kitchen board, and admin menu/reporting/QR tools.
 
-Kitchen/admin screens and authentication belong to Phase 3. Nothing has been deployed.
+Nothing has been deployed. Historical phase notes below describe earlier checkpoints.
 
 <!-- Screenshots: add 375px customer menu, live kitchen board and admin dashboard in Phase 4. -->
 
@@ -64,7 +64,7 @@ npm run dev:web
 
 Visit [the local preview](http://localhost:5173) and [API readiness](http://localhost:3001/health). If Postgres is unavailable, readiness returns HTTP 503 without exposing connection details. The frontend shows connection progress and a retry state. Node automatically loads each application's `.env`.
 
-Seeded users are `admin@example.com` and `kitchen@example.com`, both using `DEMO_PASSWORD`. Login will be available in Phase 3.
+Seeded users are `admin@example.com` and `kitchen@example.com`, both using `DEMO_PASSWORD`. Use the pre-filled demo login from the landing page.
 
 ## Checks and schema changes
 
@@ -116,7 +116,7 @@ Provider limits and deployment details must be verified against current official
 - [x] Foundation source and initial migration
 - [ ] Run migration and seed smoke test against local Docker Postgres
 - [x] Customer menu, cart, order creation and live tracking
-- [ ] Kitchen, auth, admin, QR generator and reset
+- [x] Kitchen, auth, admin, QR generator and guarded reset
 - [ ] Accessibility/mobile QA, customer Playwright test, screenshots and deployment
 
 See `DECISIONS.md` for scope choices and approved supporting packages.
@@ -199,3 +199,37 @@ The Playwright test starts its own API, needs the migrated seeded DATABASE_URL, 
 - Both focused Playwright tests passed against Neon: customer-to-kitchen live status changes (including rejected skipped transitions), seeded kitchen/admin login, logout, tablet layout, and the four menu regressions. Tablet kitchen and 375px menu screenshots were inspected.
 - Migration 0002 and image-only sync succeeded against Neon without resetting orders. All ten distinct stock image URLs returned HTTP 200 after replacing one broken cold-drink URL.
 - Not verified: deployed Vercel/Render cross-site cookies, production proxy/WebSocket setup, Render wake-up, Safari/Firefox, physical devices, and local Docker Postgres. No Phase 3B admin tools were built.
+
+## Phase 3B: admin tools
+
+Sign in through **Open admin** on the landing page. All /admin API routes require the admin role.
+
+- **Menu:** add/edit/delete categories and items, prices in cents, images, tags, availability, and option groups/choices. Expand Manage categories to organize categories. Move or remove items before deleting their category. Customer menus update live.
+- **Order history:** filter by inclusive date range and status, page through results, and open receipt details.
+- **Dashboard:** today's orders, served-order revenue, top five served items and hourly order counts, using the cafe timezone. The chart includes a text table.
+- **Table QR codes:** choose an active table, download PNG, or print a table card. Set CUSTOMER_BASE_URL in apps/api/.env to the frontend origin in production; it defaults to WEB_ORIGIN.
+- **Demo reset:** enabled only by ALLOW_DEMO_RESET=true. Type RESET DEMO DATA and confirm to wipe/reseed all cafe data and sign everyone out. Requires DEMO_PASSWORD. Limited to one attempt per five minutes per API process.
+
+New routes: GET /admin/menu, /admin/settings, /admin/dashboard, /admin/orders and /admin/orders/:id; POST /admin/categories and /admin/items; PUT/DELETE /admin/categories/:id and /admin/items/:id; POST /admin/reset. Monetary inputs use integer cents. Writes use credentialed cookies and the exact configured Origin.
+
+Focused checks (stop dev servers before Playwright):
+
+```powershell
+npm run test:e2e -- e2e/admin.spec.ts
+$env:INTEGRATION_TESTS='1'
+node --env-file=apps/api/.env node_modules/vitest/vitest.mjs run apps/api/test/admin.integration.test.ts
+Remove-Item Env:INTEGRATION_TESTS
+```
+
+Reset guard tests do not wipe Neon. To review the real reset, use a disposable database and expect all menu edits, orders and sessions to be replaced. No deployment or physical QR scan/print has been verified.
+
+### Phase 3B verification
+
+- Production build, strict typecheck and lint passed; 31 default Vitest tests passed. The two new Neon CRUD/dashboard tests passed separately. Existing Phase 2/3A browser flows were not repeated.
+- The focused admin Playwright test passed: edits to price and availability reached the open customer menu without reloading; history details, QR URL, PNG download, print layout and the disabled-reset state were checked. Tablet dashboard and print screenshots were inspected.
+- Windows locked Playwright trace files during the initial attempt. The successful focused run used:
+
+  npm run test:e2e -- e2e/admin.spec.ts --trace off --output test-results-admin
+
+- Unverified: destructive end-to-end demo reset on a disposable database, physical QR scanning/printing, physical tablets, other browser engines and production deployment/cookies. Reset confirmation, role checks, disabled configuration and rate limiting passed unit/API tests with a fake reset callback.
+- The browser test's temporary price increment was restored after a timeout; the final successful run also restored the item's original values. No full seed/reset was run against existing Neon data.

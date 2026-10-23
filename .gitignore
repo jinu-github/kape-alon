@@ -9,3 +9,5 @@ test-results/
 qa/
 *.tsbuildinfo
 *.log
+
+test-results-admin/
