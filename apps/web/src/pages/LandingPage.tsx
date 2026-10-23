@@ -51,8 +51,8 @@ export function LandingPage() {
             <span className="eyebrow">03 · BEHIND THE SCENES</span>
             <h2>A place for the details.</h2>
             <p>
-              Try the admin login. Menu management and reporting arrive in the
-              next phase.
+              Manage the menu, review orders and print table QR codes with the
+              demo admin login.
             </p>
             <Link className="button" to="/login?role=admin">
               Open admin

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { io } from 'socket.io-client';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { formatMoney, tableNumberSchema } from '@kape/shared';
 import type { MenuItem } from '@kape/shared';
-import { api, retryRead } from '../lib/api';
+import { api, apiOrigin, retryRead } from '../lib/api';
 import { loadCart, linePrice } from '../lib/cart';
 import type { CartLine } from '../lib/cart';
 import { CafeShell } from '../components/CafeShell';
@@ -36,6 +37,18 @@ export function MenuPage() {
   return <TableMenu key={number} table={number} />;
 }
 function TableMenu({ table }: { table: number }) {
+  const cache = useQueryClient();
+  useEffect(() => {
+    const socket = io(apiOrigin, { transports: ['polling', 'websocket'] });
+    const refresh = () => {
+      void cache.invalidateQueries({ queryKey: ['menu'] });
+    };
+    socket.on('connect', refresh);
+    socket.on('menu:changed', refresh);
+    return () => {
+      socket.disconnect();
+    };
+  }, [cache]);
   const tableQuery = useQuery({
     queryKey: ['table', table],
     queryFn: () => api.table(table),
@@ -44,6 +57,7 @@ function TableMenu({ table }: { table: number }) {
   const menu = useQuery({
     queryKey: ['menu'],
     queryFn: api.menu,
+    refetchInterval: 15000,
     enabled: tableQuery.isSuccess,
     retry: retryRead,
   });
